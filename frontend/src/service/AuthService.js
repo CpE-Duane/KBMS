@@ -18,7 +18,6 @@ const loginUser = (payload) => {
      })
 }
 
-
 const updatePassword = (payload) => {
      return axios.post(`${serverURL}/api/v1/auth/update-password`, payload, {
           headers: {
