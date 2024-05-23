@@ -12,6 +12,7 @@ const Files = () => {
 
     const navigate = useNavigate()
     const { folderName } = useParams()
+    const serverURL = import.meta.env.VITE_API_KEY
 
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
     const [isDeleteFileModalOpen, setIsDeleteFileModalOpen] = useState(false)
@@ -157,13 +158,13 @@ const Files = () => {
 
     const handleViewFile = (filename) => {
         const encodedFilename = encodeURIComponent(filename);
-        const link = `${import.meta.env.VITE_API_KEY}/api/v1/files/${folderName}/${encodedFilename}`
+        const link = `${serverURL}/api/v1/files/${folderName}/${encodedFilename}`
         window.open(link, '_blank');
     };
 
     const getLinkToCopy = (filename) => {
         const encodedFilename = encodeURIComponent(filename);
-        const link = `${import.meta.env.VITE_API_KEY}/api/v1/files/${folderName}/${encodedFilename}`
+        const link = `${serverURL}/api/v1/files/${folderName}/${encodedFilename}`
         setLinkToCopy(link)
     }
 
