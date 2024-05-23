@@ -10,6 +10,10 @@ const folderSchema = mongoose.Schema(
           createdAt: {
                type: Date,
                default: Date.now
+          },
+          email: {
+               type: String,
+               required: true // Assuming email is required
           }
      },
      {

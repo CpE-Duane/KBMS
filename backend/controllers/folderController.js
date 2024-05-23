@@ -8,12 +8,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const createFolder = async (req, res) => {
     try {
-        const {folderName} = req.body
-        if (!folderName) {
-            return res.status(404).send({
+        const { folderName, email } = req.body; // Assuming email is sent in the request body
+        console.log("req.body", req.body);
+        if (!folderName || !email) {
+            return res.status(400).send({
                 success: false,
-                message: "Please enter a folder name."
-           })
+                message: "Please provide folder name and email."
+            });
         }
 
         const existingFolder = await Folder.findOne({ folderName });
@@ -25,14 +26,15 @@ const createFolder = async (req, res) => {
         }
 
         const folder = await Folder.create({
-            folderName
-        })
+            folderName,
+            email // Storing the email provided in the request
+        });
+
         const uploadsDir = path.join(__dirname, '..', 'uploads');
         if (!fs.existsSync(uploadsDir)) {
             fs.mkdirSync(uploadsDir);
         }
         
-
         const folderPath = path.join(uploadsDir, folderName);
         fs.mkdirSync(folderPath);
 
@@ -40,17 +42,18 @@ const createFolder = async (req, res) => {
             success: true,
             message: "Folder created successfully",
             folder
-       })
+        });
 
     } catch (error) {
-        console.log(error)
-          res.status(500).send({
-               success: false,
-               message: "Error in Creating a folder.",
-               error: error
-          })
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error in Creating a folder.",
+            error: error
+        });
     }
 }
+
 
 const updateFolderName = async (req, res) => {
     try {
@@ -108,7 +111,8 @@ const updateFolderName = async (req, res) => {
 
 const getAllFolders = async (req, res) => {
     try {
-        const folders = await Folder.find({});
+        const {email} = req.params
+        const folders = await Folder.find({email});
 
         if (!folders) {
             return res.status(404).send({

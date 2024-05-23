@@ -3,6 +3,7 @@ import axios from "axios";
 const serverURL = import.meta.env.VITE_API_KEY
 
 const createFolder = (payload) => {
+    console.log("payload", payload);
     return axios.post(`${serverURL}/api/v1/createFolder` , payload, {
         headers: {
             "Content-Type": "application/json"
@@ -10,8 +11,8 @@ const createFolder = (payload) => {
     })
 }
 
-const getAllFolders = () => {
-    return axios.get(`${serverURL}/api/v1/folders`)
+const getAllFolders = (email) => {
+    return axios.get(`${serverURL}/api/v1/folders/${email}`)
 }
 
 const getFolder = (id) => {

@@ -11,6 +11,7 @@ import folderImg from '../assets/folder.png'
 const MyDocuments = () => {
 
     const navigate = useNavigate()
+    const account = JSON.parse(localStorage.getItem("auth"))
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -29,13 +30,17 @@ const MyDocuments = () => {
     const [searchValue, setSearchValue] = useState("")
 
     const handleCreateFolder = async () => {
+        console.log("account", account);
         if (!folderName) {
             Toast.errorMsg("Please enter folder name.")
             return;
         }
         try {
             setIsLoading(true)
-            const { data } = await FolderService.createFolder({ folderName })
+            const { data } = await FolderService.createFolder({
+                folderName,
+                email: account?.user?.email
+            })
             setFolders(data.folders)
             Toast.successMsg(data.message)
             await getFolders()
@@ -50,7 +55,7 @@ const MyDocuments = () => {
     const getFolders = async () => {
         try {
             setIsLoading(true)
-            const { data } = await FolderService.getAllFolders()
+            const { data } = await FolderService.getAllFolders(account?.user?.email)
             setFolders(data.folders)
         } catch (error) {
             Toast.errorMsg(error.response.data.message)
@@ -124,7 +129,6 @@ const MyDocuments = () => {
         <>
             <Topbar />
             <SideNavigation />
-
             <Modal
                 centered
                 title="Update Folder Name"

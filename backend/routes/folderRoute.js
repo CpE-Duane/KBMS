@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.post("/createFolder", FolderController.createFolder)
 
-router.get("/folders", FolderController.getAllFolders)
+router.get("/folders/:email", FolderController.getAllFolders)
 
 router.get("/folder/:id", FolderController.getFolder)
 
