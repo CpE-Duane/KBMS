@@ -157,13 +157,13 @@ const Files = () => {
 
     const handleViewFile = (filename) => {
         const encodedFilename = encodeURIComponent(filename);
-        const link = `http://localhost:5000/api/v1/files/${folderName}/${encodedFilename}`
+        const link = `${import.meta.env.VITE_API_KEY}/api/v1/files/${folderName}/${encodedFilename}`
         window.open(link, '_blank');
     };
 
     const getLinkToCopy = (filename) => {
         const encodedFilename = encodeURIComponent(filename);
-        const link = `http://localhost:5000/api/v1/files/${folderName}/${encodedFilename}`
+        const link = `${import.meta.env.VITE_API_KEY}/api/v1/files/${folderName}/${encodedFilename}`
         setLinkToCopy(link)
     }
 
