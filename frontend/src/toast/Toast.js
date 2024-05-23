@@ -19,8 +19,8 @@ let errorMsg = (msg) => {
 }
 
 let warningMsg = (msg) => {
-     toast.warning(msg, toastDefault);
- }
+    toast.warning(msg, toastDefault);
+}
 
 const Toast = {
     successMsg,

@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-const serverURL = "https://kbms-api.onrender.com"
-// const serverURL = "http://localhost:5000"
+const serverURL = import.meta.env.VITE_API_KEY
 
 const signUpUser = (payload) => {
      return axios.post(`${serverURL}/api/v1/auth/register`, payload, {

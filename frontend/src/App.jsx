@@ -8,6 +8,7 @@ import Account from './components/Account';
 import SignUp from './components/Signup';
 import { ToastContainer } from 'react-toastify';
 import Files from './components/Files';
+import './App.css'
 
 const App = () => {
   return (

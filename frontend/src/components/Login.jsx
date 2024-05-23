@@ -26,6 +26,14 @@ const Login = () => {
     const [started, setStarted] = useState(false);
     const [isUpdatingPassword, setIsupdatingPassword] = useState(false)
 
+    const account = JSON.parse(localStorage.getItem("auth"))
+
+    useEffect(() => {
+        if (!account) return;
+
+        navigate("/home")
+    }, [account])
+
 
     const forgotPasswordForm = useForm({
         mode: 'uncontrolled',
@@ -310,7 +318,12 @@ const Login = () => {
                                 disabled={isLoading}
                                 required
                             />
-                            <Text onClick={open} size='xs' ta="right" mt={5}>Forgot Password?</Text>
+                            <Text
+                                size='xs'
+                                ta="right"
+                                mt={5}>
+                                <span onClick={open}>Forgot Password?</span>
+                            </Text>
                             <SimpleGrid cols={2} mt={20}>
                                 <Button variant="light" color="blue" onClick={form.onSubmit((values) => handleLogin(values))}>
                                     {
@@ -327,7 +340,7 @@ const Login = () => {
 
                     </Flex>
                 </Container>
-            </Container>
+            </Container >
         </>
     )
 }
