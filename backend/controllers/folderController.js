@@ -27,8 +27,13 @@ const createFolder = async (req, res) => {
         const folder = await Folder.create({
             folderName
         })
+        const uploadsDir = path.join(__dirname, '..', 'uploads');
+        if (!fs.existsSync(uploadsDir)) {
+            fs.mkdirSync(uploadsDir);
+        }
+        
 
-        const folderPath = path.join(__dirname, '..', 'uploads', folderName);
+        const folderPath = path.join(uploadsDir, folderName);
         fs.mkdirSync(folderPath);
 
         res.status(201).send({
