@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Topbar from './Topbar'
 import SideNavigation from './SideNavigation'
-import { Button, Center, Container, Divider, Flex, Grid, Loader, Menu, Modal, Select, SimpleGrid, Skeleton, Table, Text, TextInput, Title } from '@mantine/core'
-import { IconCheck, IconDotsVertical, IconEdit, IconEyeCheck, IconFolder, IconPlus, IconTrash, IconX } from '@tabler/icons-react'
+import { Group, Button, Center, Container, Divider, Flex, Grid, Loader, Menu, Modal, Select, SimpleGrid, Skeleton, Stack, Table, Text, TextInput, Title, Image, List } from '@mantine/core'
+import { IconArrowsMaximize, IconArticle, IconCheck, IconCircle, IconCircle0, IconDotsVertical, IconEdit, IconEyeCheck, IconFolder, IconLayoutGrid, IconLayoutSidebarRightExpand, IconList, IconListDetails, IconMinus, IconPlus, IconTrash, IconX } from '@tabler/icons-react'
 import Toast from '../toast/Toast'
 import FolderService from '../service/FolderService'
 import { useNavigate } from 'react-router-dom'
@@ -28,6 +28,7 @@ const MyDocuments = () => {
     })
     const [updatedFolderNameModal, setUpdatedFolderNameModal] = useState(false)
     const [searchValue, setSearchValue] = useState("")
+    const [view, setView] = useState("")
 
     const handleCreateFolder = async () => {
         console.log("account", account);
@@ -124,6 +125,297 @@ const MyDocuments = () => {
 
     const filteredData = searchValue ? searchOptions().filter(option => option.value === searchValue) : searchOptions();
 
+    const iconProps = {
+        stroke: 1.5,
+        color: 'currentColor',
+        opacity: 0.6,
+        size: 18,
+    };
+
+    const icons = {
+        extraLargeIcons: <IconArrowsMaximize  {...iconProps} />,
+        largeIcons: <IconLayoutSidebarRightExpand  {...iconProps} />,
+        mediumIcons: <IconCircle {...iconProps} />,
+        smallIcons: <IconMinus  {...iconProps} />,
+        list: <IconList  {...iconProps} />,
+        details: <IconListDetails  {...iconProps} />,
+        tiles: <IconLayoutGrid  {...iconProps} />,
+        content: <IconArticle  {...iconProps} />,
+    };
+
+    const renderSelectOption = ({ option, checked }) => (
+        <Group flex="1" gap="xs">
+            {icons[option.value]}
+            {option.label}
+            {checked && <IconCheck style={{ marginInlineStart: 'auto' }} {...iconProps} />}
+        </Group>
+    );
+
+    const renderFolders = () => {
+        switch (view) {
+            case "extraLargeIcons":
+                return (
+                    <SimpleGrid cols={3}>
+                        {
+                            filteredData && filteredData.length > 0
+                                ?
+                                filteredData.map((folder, index) => (
+                                    <Flex direction={'column'}>
+                                        {folder.label}
+                                        <Image src={folderImg} h={300} />
+                                    </Flex>
+                                ))
+                                :
+                                <></>
+                        }
+                    </SimpleGrid>
+                )
+            case "largeIcons":
+                return (
+                    <SimpleGrid cols={4}>
+                        {
+                            filteredData && filteredData.length > 0
+                                ?
+                                filteredData.map((folder, index) => (
+                                    <Flex direction={'column'}>
+                                        {folder.label}
+                                        <Image src={folderImg} h={300} />
+                                    </Flex>
+                                ))
+                                :
+                                <></>
+                        }
+                    </SimpleGrid>
+                )
+            case "mediumIcons":
+                return (
+                    <SimpleGrid cols={6}>
+                        {
+                            filteredData && filteredData.length > 0
+                                ?
+                                filteredData.map((folder, index) => (
+                                    <Flex direction={'column'}>
+                                        {folder.label}
+                                        <Image src={folderImg} h={300} />
+                                    </Flex>
+                                ))
+                                :
+                                <></>
+                        }
+                    </SimpleGrid>
+                )
+            case "smallIcons":
+                return (
+                    <SimpleGrid cols={8}>
+                        {
+                            filteredData && filteredData.length > 0
+                                ?
+                                filteredData.map((folder, index) => (
+                                    <Flex direction={'column'}>
+                                        {folder.label}
+                                        <Image src={folderImg} h={300} />
+                                    </Flex>
+                                ))
+                                :
+                                <></>
+                        }
+                    </SimpleGrid>
+                )
+            case "list":
+                return (
+                    <>
+                        {
+                            filteredData && filteredData.length > 0
+                                ?
+                                filteredData.map((folder, index) => (
+                                    <List>
+                                        <List.Item mb={10}>{folder.label}</List.Item>
+                                    </List>
+                                ))
+                                :
+                                <></>
+                        }
+                    </>
+                )
+            case "details":
+                return (
+                    <Table>
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th><IconFolder /></Table.Th>
+                                <Table.Th>Name</Table.Th>
+                                <Table.Th>Date Created</Table.Th>
+                                <Table.Th></Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>
+                            {
+                                filteredData && filteredData.length > 0
+                                    ?
+                                    filteredData.map((folder, index) => (
+                                        <Table.Tr key={index}>
+                                            <Table.Td>
+                                                <Skeleton height={20} visible={isLoading}>
+                                                    <img src={folderImg} height={20} />
+                                                </Skeleton>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Skeleton height={20} visible={isLoading}>
+                                                    {folder.label}
+                                                </Skeleton>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Skeleton height={20} visible={isLoading}>
+                                                    {formatDate(folder.createdAt)}
+                                                </Skeleton>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Skeleton height={20} visible={isLoading}>
+                                                    <Menu shadow='xl' position='right'>
+                                                        <Menu.Target>
+                                                            <IconDotsVertical size={15} style={{ cursor: "pointer" }} />
+                                                        </Menu.Target>
+                                                        <Menu.Dropdown>
+                                                            <Menu.Label>Actions</Menu.Label>
+                                                            <Menu.Item
+                                                                leftSection={<IconEyeCheck size={20} />}
+                                                                onClick={() => navigate(`/documents/${folder.label}`)}
+                                                                color='blue'
+                                                            >
+                                                                Open
+                                                            </Menu.Item>
+                                                            <Menu.Item
+                                                                leftSection={<IconEdit size={20} />}
+                                                                color='green'
+                                                                onClick={() => {
+                                                                    setUpdatedFolderNameModal(true)
+                                                                    setUpdatedFolder({
+                                                                        id: folder.value,
+                                                                        name: folder.label
+                                                                    })
+                                                                }}
+                                                            >
+                                                                Update
+                                                            </Menu.Item>
+                                                            <Menu.Item
+                                                                leftSection={<IconTrash size={20} color='red' />}
+                                                                onClick={() => openDeleteFolderModal(folder.value, folder.label)}
+                                                                color='red'
+                                                            >
+                                                                Delete
+                                                            </Menu.Item>
+                                                        </Menu.Dropdown>
+
+                                                    </Menu>
+                                                </Skeleton>
+                                            </Table.Td>
+                                        </Table.Tr>
+                                    ))
+                                    :
+                                    <></>
+                            }
+                        </Table.Tbody>
+                    </Table>
+                )
+            case "tiles":
+                return (
+                    <SimpleGrid cols={5}>
+                        {
+                            filteredData && filteredData.length > 0
+                                ?
+                                filteredData.map((folder, index) => (
+                                    <Flex>
+                                        <Image src={folderImg} h={30} />
+                                        <Text ms={10}>{folder.label}</Text>
+                                    </Flex>
+                                ))
+                                :
+                                <></>
+                        }
+                    </SimpleGrid>
+                )
+            default:
+                return (
+                    <Table>
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th><IconFolder /></Table.Th>
+                                <Table.Th>Name</Table.Th>
+                                <Table.Th>Date Created</Table.Th>
+                                <Table.Th></Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>
+                            {
+                                filteredData && filteredData.length > 0
+                                    ?
+                                    filteredData.map((folder, index) => (
+                                        <Table.Tr key={index}>
+                                            <Table.Td>
+                                                <Skeleton height={20} visible={isLoading}>
+                                                    <img src={folderImg} height={20} />
+                                                </Skeleton>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Skeleton height={20} visible={isLoading}>
+                                                    {folder.label}
+                                                </Skeleton>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Skeleton height={20} visible={isLoading}>
+                                                    {formatDate(folder.createdAt)}
+                                                </Skeleton>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Skeleton height={20} visible={isLoading}>
+                                                    <Menu shadow='xl' position='right'>
+                                                        <Menu.Target>
+                                                            <IconDotsVertical size={15} style={{ cursor: "pointer" }} />
+                                                        </Menu.Target>
+                                                        <Menu.Dropdown>
+                                                            <Menu.Label>Actions</Menu.Label>
+                                                            <Menu.Item
+                                                                leftSection={<IconEyeCheck size={20} />}
+                                                                onClick={() => navigate(`/documents/${folder.label}`)}
+                                                                color='blue'
+                                                            >
+                                                                Open
+                                                            </Menu.Item>
+                                                            <Menu.Item
+                                                                leftSection={<IconEdit size={20} />}
+                                                                color='green'
+                                                                onClick={() => {
+                                                                    setUpdatedFolderNameModal(true)
+                                                                    setUpdatedFolder({
+                                                                        id: folder.value,
+                                                                        name: folder.label
+                                                                    })
+                                                                }}
+                                                            >
+                                                                Update
+                                                            </Menu.Item>
+                                                            <Menu.Item
+                                                                leftSection={<IconTrash size={20} color='red' />}
+                                                                onClick={() => openDeleteFolderModal(folder.value, folder.label)}
+                                                                color='red'
+                                                            >
+                                                                Delete
+                                                            </Menu.Item>
+                                                        </Menu.Dropdown>
+
+                                                    </Menu>
+                                                </Skeleton>
+                                            </Table.Td>
+                                        </Table.Tr>
+                                    ))
+                                    :
+                                    <></>
+                            }
+                        </Table.Tbody>
+                    </Table>
+                )
+        }
+    }
 
     return (
         <>
@@ -235,19 +527,37 @@ const MyDocuments = () => {
 
             <Container mt={30}>
                 <Flex justify={'space-between'} align={'center'}>
-                    <Menu shadow='xl' position='bottom-start'>
-                        <Menu.Target>
-                            <Button variant='light' leftSection={<IconPlus />}>
-                                New
-                            </Button>
-                        </Menu.Target>
-                        <Menu.Dropdown>
-                            <Menu.Label>Folders</Menu.Label>
-                            <Menu.Item leftSection={<IconFolder size={20} />} onClick={() => setIsModalOpen(true)}>
-                                Create Folder
-                            </Menu.Item>
-                        </Menu.Dropdown>
-                    </Menu>
+                    <Flex gap={'md'}>
+                        <Menu shadow='xl' position='bottom-start'>
+                            <Menu.Target>
+                                <Button variant='light' leftSection={<IconPlus />}>
+                                    New
+                                </Button>
+                            </Menu.Target>
+                            <Menu.Dropdown>
+                                <Menu.Label>Folders</Menu.Label>
+                                <Menu.Item leftSection={<IconFolder size={20} />} onClick={() => setIsModalOpen(true)}>
+                                    Create Folder
+                                </Menu.Item>
+                            </Menu.Dropdown>
+                        </Menu>
+                        <Select
+                            data={[
+                                { value: "extraLargeIcons", label: "Extra Large Icons" },
+                                { value: "largeIcons", label: "Large Icons" },
+                                { value: "mediumIcons", label: "Medium Icons" },
+                                { value: "smallIcons", label: "Small Icons" },
+                                { value: "list", label: "List" },
+                                { value: "details", label: "Details" },
+                                { value: "tiles", label: "Tiles" },
+                            ]}
+                            placeholder='View'
+                            renderOption={renderSelectOption}
+                            defaultValue={'details'}
+                            clearable
+                            onChange={(_, option) => setView(option.value)}
+                        />
+                    </Flex>
                     <Select
                         placeholder='Search folder here'
                         searchable
@@ -267,83 +577,7 @@ const MyDocuments = () => {
                         <Title mt={50}><Center>No folders found.</Center></Title>
                         :
                         <>
-                            <Table>
-                                <Table.Thead>
-                                    <Table.Tr>
-                                        <Table.Th><IconFolder /></Table.Th>
-                                        <Table.Th>Name</Table.Th>
-                                        <Table.Th>Date Created</Table.Th>
-                                        <Table.Th></Table.Th>
-                                    </Table.Tr>
-                                </Table.Thead>
-                                <Table.Tbody>
-                                    {
-                                        filteredData && filteredData.length > 0
-                                            ?
-                                            filteredData.map((folder, index) => (
-                                                <Table.Tr key={index}>
-                                                    <Table.Td>
-                                                        <Skeleton height={20} visible={isLoading}>
-                                                            <img src={folderImg} height={20} />
-                                                        </Skeleton>
-                                                    </Table.Td>
-                                                    <Table.Td>
-                                                        <Skeleton height={20} visible={isLoading}>
-                                                            {folder.label}
-                                                        </Skeleton>
-                                                    </Table.Td>
-                                                    <Table.Td>
-                                                        <Skeleton height={20} visible={isLoading}>
-                                                            {formatDate(folder.createdAt)}
-                                                        </Skeleton>
-                                                    </Table.Td>
-                                                    <Table.Td>
-                                                        <Skeleton height={20} visible={isLoading}>
-                                                            <Menu shadow='xl' position='right'>
-                                                                <Menu.Target>
-                                                                    <IconDotsVertical size={15} style={{ cursor: "pointer" }} />
-                                                                </Menu.Target>
-                                                                <Menu.Dropdown>
-                                                                    <Menu.Label>Actions</Menu.Label>
-                                                                    <Menu.Item
-                                                                        leftSection={<IconEyeCheck size={20} />}
-                                                                        onClick={() => navigate(`/documents/${folder.label}`)}
-                                                                        color='blue'
-                                                                    >
-                                                                        Open
-                                                                    </Menu.Item>
-                                                                    <Menu.Item
-                                                                        leftSection={<IconEdit size={20} />}
-                                                                        color='green'
-                                                                        onClick={() => {
-                                                                            setUpdatedFolderNameModal(true)
-                                                                            setUpdatedFolder({
-                                                                                id: folder.value,
-                                                                                name: folder.label
-                                                                            })
-                                                                        }}
-                                                                    >
-                                                                        Update
-                                                                    </Menu.Item>
-                                                                    <Menu.Item
-                                                                        leftSection={<IconTrash size={20} color='red' />}
-                                                                        onClick={() => openDeleteFolderModal(folder.value, folder.label)}
-                                                                        color='red'
-                                                                    >
-                                                                        Delete
-                                                                    </Menu.Item>
-                                                                </Menu.Dropdown>
-
-                                                            </Menu>
-                                                        </Skeleton>
-                                                    </Table.Td>
-                                                </Table.Tr>
-                                            ))
-                                            :
-                                            <></>
-                                    }
-                                </Table.Tbody>
-                            </Table>
+                            {renderFolders()}
                         </>
                 }
             </Container >
