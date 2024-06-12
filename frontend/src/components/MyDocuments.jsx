@@ -28,7 +28,8 @@ const MyDocuments = () => {
     })
     const [updatedFolderNameModal, setUpdatedFolderNameModal] = useState(false)
     const [searchValue, setSearchValue] = useState("")
-    const [view, setView] = useState("details")
+
+    const [view, setView] = useState(localStorage.getItem("view"))
 
     const handleCreateFolder = async () => {
         console.log("account", account);
@@ -160,7 +161,7 @@ const MyDocuments = () => {
                             filteredData && filteredData.length > 0
                                 ?
                                 filteredData.map((folder, index) => (
-                                    <Flex direction={'column'}>
+                                    <Flex direction={'column'} style={{ cursor: "pointer" }} onClick={() => navigate(`/documents/${folder.label}`)}>
                                         {folder.label}
                                         <Image src={folderImg} h={300} />
                                     </Flex>
@@ -177,7 +178,7 @@ const MyDocuments = () => {
                             filteredData && filteredData.length > 0
                                 ?
                                 filteredData.map((folder, index) => (
-                                    <Flex direction={'column'}>
+                                    <Flex direction={'column'} style={{ cursor: "pointer" }} onClick={() => navigate(`/documents/${folder.label}`)}>
                                         {folder.label}
                                         <Image src={folderImg} h={300} />
                                     </Flex>
@@ -194,7 +195,7 @@ const MyDocuments = () => {
                             filteredData && filteredData.length > 0
                                 ?
                                 filteredData.map((folder, index) => (
-                                    <Flex direction={'column'}>
+                                    <Flex direction={'column'} style={{ cursor: "pointer" }} onClick={() => navigate(`/documents/${folder.label}`)}>
                                         {folder.label}
                                         <Image src={folderImg} h={300} />
                                     </Flex>
@@ -211,7 +212,7 @@ const MyDocuments = () => {
                             filteredData && filteredData.length > 0
                                 ?
                                 filteredData.map((folder, index) => (
-                                    <Flex direction={'column'}>
+                                    <Flex direction={'column'} style={{ cursor: "pointer" }} onClick={() => navigate(`/documents/${folder.label}`)}>
                                         {folder.label}
                                         <Image src={folderImg} h={300} />
                                     </Flex>
@@ -228,7 +229,7 @@ const MyDocuments = () => {
                             filteredData && filteredData.length > 0
                                 ?
                                 filteredData.map((folder, index) => (
-                                    <List>
+                                    <List style={{ cursor: "pointer" }} onClick={() => navigate(`/documents/${folder.label}`)}>
                                         <List.Item mb={10}>{folder.label}</List.Item>
                                     </List>
                                 ))
@@ -324,7 +325,7 @@ const MyDocuments = () => {
                             filteredData && filteredData.length > 0
                                 ?
                                 filteredData.map((folder, index) => (
-                                    <Flex>
+                                    <Flex style={{ cursor: "pointer" }} onClick={() => navigate(`/documents/${folder.label}`)}>
                                         <Image src={folderImg} h={30} />
                                         <Text ms={10}>{folder.label}</Text>
                                     </Flex>
@@ -333,86 +334,6 @@ const MyDocuments = () => {
                                 <></>
                         }
                     </SimpleGrid>
-                )
-            default:
-                return (
-                    <Table>
-                        <Table.Thead>
-                            <Table.Tr>
-                                <Table.Th><IconFolder /></Table.Th>
-                                <Table.Th>Name</Table.Th>
-                                <Table.Th>Date Created</Table.Th>
-                                <Table.Th></Table.Th>
-                            </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                            {
-                                filteredData && filteredData.length > 0
-                                    ?
-                                    filteredData.map((folder, index) => (
-                                        <Table.Tr key={index}>
-                                            <Table.Td>
-                                                <Skeleton height={20} visible={isLoading}>
-                                                    <img src={folderImg} height={20} />
-                                                </Skeleton>
-                                            </Table.Td>
-                                            <Table.Td>
-                                                <Skeleton height={20} visible={isLoading}>
-                                                    {folder.label}
-                                                </Skeleton>
-                                            </Table.Td>
-                                            <Table.Td>
-                                                <Skeleton height={20} visible={isLoading}>
-                                                    {formatDate(folder.createdAt)}
-                                                </Skeleton>
-                                            </Table.Td>
-                                            <Table.Td>
-                                                <Skeleton height={20} visible={isLoading}>
-                                                    <Menu shadow='xl' position='right'>
-                                                        <Menu.Target>
-                                                            <IconDotsVertical size={15} style={{ cursor: "pointer" }} />
-                                                        </Menu.Target>
-                                                        <Menu.Dropdown>
-                                                            <Menu.Label>Actions</Menu.Label>
-                                                            <Menu.Item
-                                                                leftSection={<IconEyeCheck size={20} />}
-                                                                onClick={() => navigate(`/documents/${folder.label}`)}
-                                                                color='blue'
-                                                            >
-                                                                Open
-                                                            </Menu.Item>
-                                                            <Menu.Item
-                                                                leftSection={<IconEdit size={20} />}
-                                                                color='green'
-                                                                onClick={() => {
-                                                                    setUpdatedFolderNameModal(true)
-                                                                    setUpdatedFolder({
-                                                                        id: folder.value,
-                                                                        name: folder.label
-                                                                    })
-                                                                }}
-                                                            >
-                                                                Update
-                                                            </Menu.Item>
-                                                            <Menu.Item
-                                                                leftSection={<IconTrash size={20} color='red' />}
-                                                                onClick={() => openDeleteFolderModal(folder.value, folder.label)}
-                                                                color='red'
-                                                            >
-                                                                Delete
-                                                            </Menu.Item>
-                                                        </Menu.Dropdown>
-
-                                                    </Menu>
-                                                </Skeleton>
-                                            </Table.Td>
-                                        </Table.Tr>
-                                    ))
-                                    :
-                                    <></>
-                            }
-                        </Table.Tbody>
-                    </Table>
                 )
         }
     }
@@ -554,9 +475,11 @@ const MyDocuments = () => {
                             value={view}
                             placeholder='View'
                             renderOption={renderSelectOption}
-                            clearable
                             searchable
-                            onChange={(_, option) => setView(option.value)}
+                            onChange={(_, option) => {
+                                localStorage.setItem("view", option.value)
+                                setView(option.value)
+                            }}
                         />
                     </Flex>
                     <Select
