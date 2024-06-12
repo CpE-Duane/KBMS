@@ -28,7 +28,7 @@ const MyDocuments = () => {
     })
     const [updatedFolderNameModal, setUpdatedFolderNameModal] = useState(false)
     const [searchValue, setSearchValue] = useState("")
-    const [view, setView] = useState("")
+    const [view, setView] = useState("details")
 
     const handleCreateFolder = async () => {
         console.log("account", account);
@@ -551,10 +551,11 @@ const MyDocuments = () => {
                                 { value: "details", label: "Details" },
                                 { value: "tiles", label: "Tiles" },
                             ]}
+                            value={view}
                             placeholder='View'
                             renderOption={renderSelectOption}
-                            defaultValue={'details'}
                             clearable
+                            searchable
                             onChange={(_, option) => setView(option.value)}
                         />
                     </Flex>
